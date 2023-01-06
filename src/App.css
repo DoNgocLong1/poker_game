@@ -1,7 +1,7 @@
 .App {
   text-align: center;
-  /* background-image: url('assets/Images/background.jpg'); */
-  background: #000;
+  background-image: url('assets/Images/background1.jpg');
+  /* background: #000; */
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;

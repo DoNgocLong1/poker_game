@@ -17,7 +17,7 @@ const User = ({width = 70, height = 70, flex = 'column' ,data, name}: IUser) => 
     <Container flex = {flex}>   
       <NameLabel>{data?.name || name}</NameLabel>
       <Avatar alt="Remy Sharp" src={data?.avatar} sx={{ width: width, height: height}}/>
-      <Budget>400k</Budget> 
+      <Budget>{data?.money}k</Budget> 
     </Container>
   )
 }
