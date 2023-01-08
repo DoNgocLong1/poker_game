@@ -5,6 +5,8 @@
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: center;
+  max-height: 100vh;
+  overflow: hidden;
 }
 
 .App-logo {

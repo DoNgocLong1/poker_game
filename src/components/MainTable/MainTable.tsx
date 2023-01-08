@@ -4,7 +4,8 @@ import { styled } from '@mui/material/styles';
 import { Button } from '@mui/material';
 import { motion } from "framer-motion";
 import { ICard } from 'types/card.type';
-import { Container, 
+import { 
+    Container, 
     WrapperUser,
     WrapperActive,
     WrapperBot1,
@@ -18,8 +19,31 @@ import { Container,
     ProgressBar,
     NotificationWinner
  } from './MainTable.styled'
+ import {
+    USER_ANIMATION_1,
+    USER_ANIMATION_2,
+    USER_ANIMATION_3,
+    FIRST_BOT_ANIMATION_1,
+    FIRST_BOT_ANIMATION_2,
+    FIRST_BOT_ANIMATION_3,
+    SECOND_BOT_ANIMATION_1,
+    SECOND_BOT_ANIMATION_2,
+    SECOND_BOT_ANIMATION_3,
+    THIRD_BOT_ANIMATION_1,
+    THIRD_BOT_ANIMATION_2,
+    THIRD_BOT_ANIMATION_3,
+    PROGRESS_ANIMATION,
+    finishCard,
+    finishCardTop,
+    finishMoney,
+    finishMoneyRight,
+    finishMoneyTop,
+    popUpWinner
+ } from 'utils/animation';
 import Card from 'components/Card/Card';
 import { IUserData } from 'types/user.type';
+import getCard from 'utils/getCard';
+import totalScore from 'utils/caculateScore';
 const MotionCard = motion(Card, { forwardMotionProps: true })
 const CancelButton = styled(Button)`
     background-Color: #ee294f;
@@ -37,155 +61,11 @@ const MainTable = () => {
         isFlipCardUser: false,
         isFlipCardBot: false,
     })
-    const [winnerName, setWinnerName] = useState<string>('')
     const timeToFlipCard: number = 7000
-
-    const initAnimation = { x: '-50%', y: '-50%', opacity: 1 }
-    const USER_ANIMATION_1 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% - 110px)', y: 'calc(-50% + 200px)', 
-        transition: { duration: 1, delay: 0.25 } },
-      }
-    const USER_ANIMATION_2 = {
-        initial: initAnimation,
-        end: { x: '-50%', y: 'calc(-50% + 200px)',
-        transition: { duration: 1, delay: 0.5 } },
-    }
-    const USER_ANIMATION_3 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% + 110px)', y: 'calc(-50% + 200px)', 
-        transition: { duration: 1, delay: 0.75 } },
-    }
-
-    const FIRST_BOT_ANIMATION_1 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% - 500px)', y: '-50%', 
-        transition: { duration: 1, delay: 1.25 } },
-    }
-    const FIRST_BOT_ANIMATION_2 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% - 390px)', y: '-50%', 
-        transition: { duration: 1, delay: 1.5 } },
-    }
-    const FIRST_BOT_ANIMATION_3 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% - 280px)', y: '-50%', 
-        transition: { duration: 1, delay: 1.75 } },
-    }
-
-
-    
-    const SECOND_BOT_ANIMATION_1 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% - 110px)', y: 'calc(-50% - 200px)', 
-        transition: { duration: 1, delay: 2 } },
-    }
-    const SECOND_BOT_ANIMATION_2 = {
-        initial: initAnimation,
-        end: { x: '-50%', y: 'calc(-50% - 200px)', 
-        transition: { duration: 1, delay: 2.25 } },
-    }
-    const SECOND_BOT_ANIMATION_3 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% + 110px)', y: 'calc(-50% - 200px)', 
-        transition: { duration: 1, delay: 2.75 } },
-    }
-
-
-    const THIRD_BOT_ANIMATION_1 = {
-        initial: initAnimation,
-        end: { x: 'calc(-50% + 500px)', y: '-50%', 
-        transition: { duration: 1, delay: 3 } },
-    }
-    const THIRD_BOT_ANIMATION_2 = {
-        initial: initAnimation,
-        end: {x: 'calc(-50% + 390px)', y: '-50%', 
-        transition: { duration: 1, delay: 3.25 } },
-    }
-    const THIRD_BOT_ANIMATION_3 = {
-        initial: initAnimation,
-        end: {x: 'calc(-50% + 280px)', y: '-50%', 
-        transition: { duration: 1, delay: 3.5} },
-    }
-
-    const PROGRESS_ANIMATION = {
-        initial: {width: '100%'},
-        end: {width: '0', 
-        transition: { duration: 4, delay: 4}}
-    }
-    const timeFinish: number = 1
-    const finishCard = {
-        initial: { y: -150, opacity: 0},
-        end: { y: -120, opacity: 1,
-        transition: { duration: timeFinish}}
-    }
-    const finishCardTop = {
-        initial: {x: -150, y: 'calc(-50% + 30px)', opacity: 0},
-        end: { x: -150,y: '-50%', opacity: 1,
-        transition: { duration: timeFinish}}
-    }
-
-    const finishMoney = {
-        initial: {x: 80, y: 'calc(-50% + 30px)',opacity: 0},
-        end: {x: 80, y: '-50%', opacity: 1,
-        transition: { duration: timeFinish}}
-    }
-    const finishMoneyRight = {
-        initial: {x: -80, y: 'calc(-50% + 30px)',opacity: 0},
-        end: {x: -80, y: '-50%', opacity: 1,
-        transition: { duration: timeFinish}}
-    }
-    const finishMoneyTop = {
-        initial: {x: 150, y: 'calc(-50% + 30px)',opacity: 0},
-        end: {x: 150, y: '-50%',opacity: 1,
-        transition: { duration: timeFinish}}
-    }
-    const popUpWinner = {
-        initial: {x: 'calc(-50% + 30px)', y: 'calc(-50% + 30px)',opacity: 0},
-        end: {x: '-50%', y: '-50%',opacity: 1,
-        transition: { duration: timeFinish}}
-    }
-    const totalScore = (arr: ICard[]): number => {
-        const score:number = arr.reduce((total: number, item: any)=> {
-            return total += item.value
-        },0)
-        let result: number  = 0
-        if(score <= 10) {
-            return score
-        }else{
-            result = Number(score.toString()[1])
-            if(result === 0 ){
-                return 10
-            }
-        }
-        return result 
-    }
- 
-
     const cardList: ICard[] = []
-    const getRandomCard = (max: number, min: number): number => {
-        const random: number = Math.floor(Math.random() * (max - min + 1)) + min
-        return random
-    }
-    const getCard = () => {
-        const suitList: string[] = ["clubs", "diamonds", "hearts", "spades"]
-        const value: number = getRandomCard(10,1)
-        const suitIndex: number = getRandomCard(3,0)
-        const newCard: ICard = {
-            value,
-            suit: suitList[suitIndex]
-        } 
-        const includeCard = cardList.find((item) => {
-            return newCard.value === item.value && newCard.suit === item.suit
-        })
-        if(includeCard)
-            return
-        cardList.push(newCard)
-    }
     while(cardList.length < 12) {
-        getCard()
+        getCard(cardList)
     }
-
     const userCard: ICard[] = cardList.slice(0,3)
     const scoreUser = totalScore(userCard)
     const bot1Card: ICard[] = cardList.slice(3,6)
@@ -206,7 +86,7 @@ const MainTable = () => {
 
     const botInfo1: IUserData = {
         id:' bot1',
-        card: [],
+        card: bot1Card,
         score: scoreBot1,
         name: "bot1",
         avatar:
@@ -217,7 +97,7 @@ const MainTable = () => {
 
     const botInfo2: IUserData = {
         id:' bot2',
-        card: [],
+        card: bot2Card,
         score: scoreBot2,
         name: "bot2",
         avatar:
@@ -228,7 +108,7 @@ const MainTable = () => {
 
     const botInfo3: IUserData = {
         id:' bot3',
-        card: [],
+        card: bot3Card,
         score: scoreBot3,
         name: "bot3",
         avatar:
@@ -236,36 +116,15 @@ const MainTable = () => {
         money: 5000,
         typeUser: 'bot'
     }
-    const userArr : IUserData[] = [userInfo ,botInfo1, botInfo2, botInfo3]
-    const handleCaculateMoney = (winner: IUserData): void => {
-        const addMoney = userArr.filter((item: IUserData) => {
-            return item.id === winner.id
-        })
-    }
-    const findWInner = (): void => {
-        let winner: IUserData = userInfo
-        userArr.forEach((item: IUserData) => {
-            if(item.score > winner.score){
-                winner = item
-            }
-        })
-        setWinnerName(winner.name)
-        /* _listUser = _listUser.map((user) =>
-      idsWinners.includes(user.id)
-        ? { ...user, money: (user.money += (bets * 3) / arrayWinners.length) }
-        : { ...user, money: (user.money -= bets) }
-    ); */
-    }
-    console.log(userInfo.money)
-    console.log('rhjrtjhrtjrt')
+    const userArr: IUserData[] = [userInfo, botInfo1, botInfo2, botInfo3]
+    const [winnerList, setWinnerList] = useState<IUserData[]>([userArr[0]])
     return (
         <Container>
-            {/* <Overlay/> */}
             <NotificationWinner
             variants = {popUpWinner}
             animate={!isFlipCard.isFlipCardBot ? "initial" : "end"}
             >
-                {winnerName} win
+                {winnerList[0]?.name} win
             </NotificationWinner>
             <ProgressBar
                 variants= {PROGRESS_ANIMATION}
@@ -273,14 +132,13 @@ const MainTable = () => {
             />
             <WrapperUser>
                 <User
-                data = {userInfo}           
+                data = {userArr[0]}           
                 />
                 <PopupWinner
                 variants= {finishCard}
-                animate={!isFlipCard.isFlipCardBot ? "initial" : "end"}
-                
+                animate={!isFlipCard.isFlipCardBot ? "initial" : "end"}              
                 >
-                    {scoreUser} Điểm
+                    {userArr[0].score} Điểm
                 </PopupWinner>
                 <PopupMoney 
                 variants= {finishMoney}
@@ -298,14 +156,13 @@ const MainTable = () => {
                             isFlipCardUser: true,
                             isFlipCardBot: true,
                         })
-                        findWInner()
+                 
                     }, timeToFlipCard + 1000)
                     setIsStart(true)
                 }}
                 >
                 Phát bài
-                </PutButton>
-                
+                </PutButton>               
                 <CancelButton 
                 variant="contained" color="error"
                 onClick={() => {
@@ -321,14 +178,14 @@ const MainTable = () => {
             </WrapperActive>
             <WrapperBot1>
                 <User 
-                data = {botInfo1}           
+                data = {userArr[1]}           
                 />
                 <PopupWinner 
                 variants= {finishCard}
                 animate={!isFlipCard.isFlipCardBot ? "initial" : "end"}
                 flipcard = {isFlipCard.isFlipCardBot}
                 >
-                    {scoreBot1} Điểm
+                    {userArr[1].score} Điểm
                 </PopupWinner>
                 <PopupMoney 
                 flipcard = {isFlipCard.isFlipCardBot}
@@ -338,15 +195,14 @@ const MainTable = () => {
                     -100
                 </PopupMoney>
             </WrapperBot1>
-
             <WrapperBot2>
-                <User  data = {botInfo2} flex = 'row'/>
+                <User  data = {userArr[2]} flex = 'row'/>
                 <PopupWinnerTop 
                 flipcard = {isFlipCard.isFlipCardBot}
                 variants= {finishCardTop}
                 animate={!isFlipCard.isFlipCardBot ? "initial" : "end"}
                 >
-                    {scoreBot2} Điểm
+                    {userArr[2].score} Điểm
                 </PopupWinnerTop>
                 <PopupMoneyTop 
                 flipcard = {isFlipCard.isFlipCardBot}
@@ -356,15 +212,14 @@ const MainTable = () => {
                     -100
                 </PopupMoneyTop>
             </WrapperBot2>
-
             <WrapperBot3>
-                <User data = {botInfo3} />
+                <User data = {userArr[3]} />
                 <PopupWinner 
                 flipcard = {isFlipCard.isFlipCardBot}
                 variants= {finishCard}
                 animate={!isFlipCard.isFlipCardBot ? "initial" : "end"}
                 >
-                    {scoreBot3} Điểm
+                    {userArr[3].score} Điểm
                 </PopupWinner>
                 <PopupMoneyRight 
                 flipcard = {isFlipCard.isFlipCardBot}
@@ -375,14 +230,12 @@ const MainTable = () => {
                 </PopupMoneyRight>
             </WrapperBot3>
             <MotionCard 
-            belongTo='master'
-                initial = {{
+            initial = {{
                 x: 'calc(-50% + 3px)',
                 y: 'calc(-50% + 3px)'
             }}
             />
             <MotionCard 
-            belongTo='master'
             initial = {{
                 x: '-50%',
                 y: '-50%'
@@ -393,9 +246,8 @@ const MainTable = () => {
                 x: 'calc(-50% - 3px)',
                 y: 'calc(-50% - 3px)'
             }}
-            belongTo='master'
             />   
-            {userCard.map((card, index) => {
+            {userArr[0]?.card.map((card: ICard, index: number) => {
                 const variant = index === 1 ? USER_ANIMATION_1 : index === 2 ?
                 USER_ANIMATION_2 : USER_ANIMATION_3
                 return (
@@ -409,7 +261,7 @@ const MainTable = () => {
                     />
                 )})
             }
-            {bot1Card.map((card, index) => {
+            {userArr[1]?.card.map((card: ICard, index: number) => {
                 const variant = index === 1 ? FIRST_BOT_ANIMATION_1 : index === 2 ?
                 FIRST_BOT_ANIMATION_2 : FIRST_BOT_ANIMATION_3
                 return (
@@ -423,7 +275,7 @@ const MainTable = () => {
                     />
                 )})
             }
-            {bot2Card.map((card, index) => {
+            {userArr[2]?.card.map((card: ICard, index: number) => {
                 const variant = index === 1 ? SECOND_BOT_ANIMATION_1 : index === 2 ?
                 SECOND_BOT_ANIMATION_2 : SECOND_BOT_ANIMATION_3
                 return (
@@ -437,7 +289,7 @@ const MainTable = () => {
                     />
                 )})
             }
-            {bot3Card.map((card, index) => {
+            {userArr[3]?.card.map((card: ICard, index: number) => {
                 const variant = index === 1 ? THIRD_BOT_ANIMATION_1 : index === 2 ?
                 THIRD_BOT_ANIMATION_2 : THIRD_BOT_ANIMATION_3
                 return (
